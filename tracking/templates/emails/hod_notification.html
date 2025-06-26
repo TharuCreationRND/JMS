@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Department Borrow Notification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+      color: #2b6cb0;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 6px 0;
+    }
+    li::before {
+      content: "•";
+      color: #2b6cb0;
+      margin-right: 8px;
+    }
+    .highlight {
+      background-color: #ebf8ff;
+      padding: 15px;
+      border-left: 5px solid #4299e1;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Department Borrow Notification</h2>
+
+    <p>Dear HOD,</p>
+
+    <p>We would like to inform you that <strong>{{ borrow.name }}</strong> from your department (<strong>{{ borrow.department }}</strong>) has borrowed the following item:</p>
+
+    <ul>
+      <li>📅 <strong>Date:</strong> {{ borrow.date }}</li>
+      <li>🔧 <strong>Item Type:</strong> {{ borrow.item_type }}</li>
+      <li>👤 <strong>Borrower:</strong> {{ borrow.name }}</li>
+      <li>📦 <strong>Status:</strong> {{ borrow.get_status_display }}</li>
+      <li>📥 <strong>Return Date:</strong> {{ borrow.return_date|default:"-" }}</li>
+      <li>📝 <strong>Reason:</strong> {{ borrow.reason|default:"-" }}</li>
+    </ul>
+
+    <div class="highlight">
+      📌 Note: This item is taken for {{ borrow.days }} day{{ borrow.days|pluralize }}.
+    </div>
+
+    <div class="footer">
+      <p>If there is any issue with this request, please contact the R &amp; D department immediately.</p>
+      <p>Thank you,<br>
+      R &amp; D Department<br>
+      Tharu Creation</p>
+    </div>
+  </div>
+</body>
+</html>

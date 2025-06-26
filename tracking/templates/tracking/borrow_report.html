@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Borrow Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100 p-6">
+  <div class="max-w-screen-xl mx-auto">
+
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Borrow Report</h1>
+
+    <!-- Filter Form -->
+    <form method="get" class="mb-6 bg-white p-4 rounded shadow flex flex-wrap gap-4 items-end">
+
+      <div>
+        <label for="date_from" class="block text-sm font-medium text-gray-700">Date From</label>
+        <input type="date" id="date_from" name="date_from" value="{{ request.GET.date_from }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="date_to" class="block text-sm font-medium text-gray-700">Date To</label>
+        <input type="date" id="date_to" name="date_to" value="{{ request.GET.date_to }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" id="name" name="name" placeholder="Name" value="{{ request.GET.name }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+        <input type="text" id="department" name="department" placeholder="Department"
+          value="{{ request.GET.department }}" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <div>
+        <label for="item_type" class="block text-sm font-medium text-gray-700">Item Type</label>
+        <input type="text" id="item_type" name="item_type" placeholder="Item Type" value="{{ request.GET.item_type }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+
+      <div class="flex space-x-2">
+        <button type="submit"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Filter</button>
+        <button type="submit" formaction="{% url 'export_borrow_excel' %}" formmethod="get"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Export Excel</button>
+      </div>
+    </form>
+
+    <!-- Multi-Select Delete Form -->
+    <form method="post" action="{% url 'borrow_report' %}"
+      onsubmit="return confirm('Are you sure you want to delete selected records?');">
+      {% csrf_token %}
+      <div class="overflow-x-auto bg-white shadow rounded border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+          <thead class="bg-gradient-to-r from-green-400 to-blue-500 text-white uppercase tracking-wider">
+            <tr>
+              <th class="px-4 py-2 text-center">
+                <input type="checkbox" id="select_all" class="cursor-pointer" />
+              </th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Date</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Name</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Designation</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Department</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Item Type</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Days</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Email</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Reason</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">HOD Email</th>
+              <th class="px-4 py-2 text-center whitespace-nowrap">Actions</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Created_by</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for borrow in borrows %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 whitespace-nowrap text-center">
+                <input type="checkbox" name="selected_borrows" value="{{ borrow.id }}"
+                  class="borrow_checkbox cursor-pointer" />
+              </td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.date }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.name }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.designation }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.department }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.item_type }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.days }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.email }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.reason|default:"-" }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.hod_email|default:"-" }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ borrow.created_by.username }}</td>
+              <td class="px-4 py-2 whitespace-nowrap text-center">
+                {% if borrow.created_by == current_user or current_user.is_superuser %}
+                <a href="{% url 'edit_borrow' borrow.id %}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
+                <a href="{% url 'delete_borrow' borrow.id %}" class="text-red-600 hover:text-red-900"
+                  onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+                {% else %}
+                <span class="text-gray-400">No Access</span>
+                {% endif %}
+              </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="11" class="px-4 py-4 text-center text-gray-500">No borrow records found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-4 flex justify-end">
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+          Delete Selected
+        </button>
+      </div>
+    </form>
+
+    <a href="{% url 'dashboard' %}"
+      class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5 mt-6 inline-block">
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <script>
+    // Select/unselect all checkboxes
+    document.getElementById('select_all').addEventListener('change', function (e) {
+      const checked = e.target.checked;
+      document.querySelectorAll('.borrow_checkbox').forEach(cb => cb.checked = checked);
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 10px auto;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      color: #2f855a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .status {
+      background-color: #edf7ed;
+      padding: 10px;
+      border-left: 5px solid #38a169;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Job Status Update</h2>
+    <table>
+      <tr><th>Job Date</th><td>{{ job.job_date }}</td></tr>
+      <tr><th>Center</th><td>{{ job.center }}</td></tr>
+      <tr><th>Job Number</th><td>{{ job.job_number }}</td></tr>
+      <tr><th>Item Type</th><td>{{ job.item_type }}</td></tr>
+      <tr><th>Request By</th><td>{{ job.request_by }}</td></tr>
+      <tr><th>Job Assignee</th><td>{{ job.job_assignee }}</td></tr>
+      <tr><th>Center Sent Date</th><td>{{ job.center_sent_date }}</td></tr>
+      <tr><th>Head Office Receive Date</th><td>{{ job.head_office_receive_date }}</td></tr>
+      <tr><th>Serial Number</th><td>{{ job.serial_number }}</td></tr>
+      <tr><th>Remark</th><td>{{ job.remark|default:"-" }}</td></tr>
+    </table>
+
+    <div class="status">
+      Status: {{ status }}<br>
+      {{ note }}
+    </div>
+    <div class="section footer">
+      <p>If there is any issue with this request, please contact the R & D department immediately.</p>
+      <p>Thank you,<br>R &amp; D Department<br>Tharu Creation</p>
+    </div>
+  </div>
+</body>
+</html>

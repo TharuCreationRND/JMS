@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-6 bg-white rounded shadow">
+
+  <h1 class="text-3xl font-bold mb-6 text-center text-green-700">Edit Backup Plan</h1>
+
+  <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="flex flex-col">
+        <label for="{{ field.id_for_label }}" class="mb-1 font-semibold">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <span class="text-red-600 text-sm">{{ field.errors.0 }}</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+    
+    <div class="col-span-full flex justify-between pt-6 border-t border-gray-200 mt-4">
+      <a href="{% url 'backupplan_list' %}" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Back</a>
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Save</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

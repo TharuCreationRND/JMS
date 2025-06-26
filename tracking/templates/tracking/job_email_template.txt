@@ -1,0 +1,22 @@
+Job Report Summary
+
+{% for job in jobs %}
+------------------------------------------
+Job Date: {{ job.job_date }}
+Center: {{ job.center }}
+Job Number: {{ job.job_number }}
+Item Type: {{ job.item_type }}
+Request By: {{ job.request_by }}
+Job Assignee: {{ job.job_assignee }}
+Center Sent Date: {{ job.center_sent_date }}
+Head Office Receive Date: {{ job.head_office_receive_date }}
+Serial Number: {{ job.serial_number }}
+Remark: {{ job.remark|default:"-" }}
+
+Status: {{ job.status }}
+{% if job.status == "Pending" %}
+Note: This job is still pending.
+{% endif %}
+------------------------------------------
+
+{% endfor %}

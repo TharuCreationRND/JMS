@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Eco Sri Job Tracking{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<body class="bg-gray-100 min-h-screen">
+
+    <header class="bg-green-600 text-white p-4">
+        <h1 class="text-3xl font-bold">Eco Sri Job Tracking System</h1>
+    </header>
+
+    <main class="container mx-auto p-6">
+        {% block content %}
+        <!-- Page specific content goes here -->
+        {% endblock %}
+    </main>
+
+    <footer class="bg-green-600 text-white p-4 text-center mt-10">
+        &copy; 2025 Eco Sri
+    </footer>
+
+</body>
+</html>

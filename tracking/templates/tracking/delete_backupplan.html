@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto p-6 bg-white rounded shadow text-center">
+
+  <h1 class="text-3xl font-bold mb-6 text-red-600">Delete Backup Plan</h1>
+
+  <p class="mb-6">Are you sure you want to delete the backup plan: <strong>{{ backup_plan.name }}</strong>?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex justify-center space-x-4">
+      <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">Delete</button>
+      <a href="{% url 'backupplan_list' %}" class="bg-gray-300 px-6 py-2 rounded hover:bg-gray-400">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

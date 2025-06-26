@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projector & Mobile Phone Borrow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-6xl mx-auto bg-white shadow rounded-xl p-6">
+        <h1 class="text-xl font-bold text-green-600 mb-4">Projector & Mobile Phone Borrow</h1>
+        <table class="min-w-full text-sm bg-white">
+            <thead>
+                <tr class="bg-gray-200 text-gray-700">
+                    <th class="py-2 px-4">Date</th>
+                    <th class="py-2 px-4">Name</th>
+                    <th class="py-2 px-4">Designation</th>
+                    <th class="py-2 px-4">Department</th>
+                    <th class="py-2 px-4">Item Type</th>
+                    <th class="py-2 px-4">Days</th>
+                    <th class="py-2 px-4">Email</th>
+                    <th class="py-2 px-4">Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for borrow in borrows %}
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="py-2 px-4">{{ borrow.date }}</td>
+                    <td class="py-2 px-4">{{ borrow.name }}</td>
+                    <td class="py-2 px-4">{{ borrow.designation }}</td>
+                    <td class="py-2 px-4">{{ borrow.department }}</td>
+                    <td class="py-2 px-4">{{ borrow.item_type }}</td>
+                    <td class="py-2 px-4">{{ borrow.days }}</td>
+                    <td class="py-2 px-4">{{ borrow.email }}</td>
+                    <td class="py-2 px-4">{{ borrow.reason }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-gray-500">No borrow records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

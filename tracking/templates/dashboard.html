@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="transition-colors duration-500">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eco Sri Dashboard</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #4ade80;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-gradient-to-tr from-green-100 to-blue-200 dark:from-gray-900 dark:to-gray-800 transition-colors duration-700">
+
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-10">
+      <!-- Left: Logo -->
+      <div class="flex items-center space-x-4">
+        <img src="{% static 'tracking/images/1.png' %}" alt="Logo" class="h-14 w-auto rounded-md shadow-lg" />
+      </div>
+
+      <!-- Centered Title -->
+      <div class="flex flex-col items-center space-y-8">
+        <h1 class="text-4xl font-extrabold text-green-700 dark:text-green-400 tracking-wide">
+          Eco Sri Track Mate
+        </h1>
+      </div>
+
+      <!-- Right: User info + Dark Mode Toggle + Logout -->
+      <div class="flex items-center space-x-6">
+        <div class="text-right text-gray-700 dark:text-gray-300">
+          <p class="font-semibold">Welcome, {{ user.username }}</p>
+          <div id="datetime" class="font-mono leading-snug">
+            <p id="date-part" class="text-large font-bold"></p>
+            <p id="time-part" class="text-xl font-bold"></p>
+          </div>
+        </div>
+
+        <!-- Dark Mode Toggle Button -->
+        <button id="theme-toggle" aria-label="Toggle Dark Mode" title="Toggle Dark Mode"
+          class="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition text-2xl">
+          🌙
+        </button>
+
+        <!-- Logout -->
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" title="Logout"
+            class="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1" />
+            </svg>
+            Logout
+          </button>
+        </form>
+      </div>
+    </header>
+
+    <!-- Dashboard Cards -->
+    <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+      <!-- Add Job -->
+      <a href="{% url 'add_job' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 dark:text-green-400 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6M9 8h.01M15 5h.01M9 5h.01M5 8h.01M5 12h.01M5 16h.01M15 12h.01M15 16h.01M19 7v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h3l2-2 2 2h3a2 2 0 012 2z" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Add Job Details</h3>
+      </a>
+
+      <!-- Job Report -->
+      <a href="{% url 'job_report' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 dark:text-green-400 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-4.35-4.35m0 0a7 7 0 11-9.9-9.9 7 7 0 019.9 9.9z" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Job Tracking Report</h3>
+      </a>
+
+      <!-- Add Breakdown -->
+      <a href="{% url 'add_breakdown' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-600 dark:text-red-400 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Add Breakdown</h3>
+      </a>
+
+      <!-- Breakdown Report -->
+      <a href="{% url 'breakdown_report' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 dark:text-green-400 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          <circle cx="15.5" cy="15.5" r="2.5" />
+          <path d="M17.5 17.5l2.5 2.5" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Breakdown Log Report</h3>
+      </a>
+
+      <!-- Borrow -->
+      <a href="{% url 'add_borrow' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-pink-600 dark:text-pink-400 mb-6" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+          style="transform: rotate(90deg);">
+          <rect x="7" y="2" width="10" height="20" rx="4" ry="4" />
+          <circle cx="12" cy="18" r="1" />
+          <path d="M9 6h6" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Projector & Mobile Borrow</h3>
+      </a>
+
+      <!-- Borrow Report -->
+      <a href="{% url 'borrow_report' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="text-green-600 dark:text-green-400 mb-4">
+          <rect x="5" y="1" width="15" height="20" rx="5" ry="5" />
+          <path d="M9 12l2 2 4-4" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Projector & Mobile Borrow Report</h3>
+      </a>
+
+      <!-- Backup Plan -->
+      <a href="{% url 'backupplan_list' %}"
+        class="card bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transform transition duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 dark:text-green-400 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 7v10M16 7v10M12 12h.01M6 12h.01M18 12h.01M4 5h16v14H4z" />
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Backup Plan Management</h3>
+      </a>
+
+    </main>
+  </div>
+
+  <!-- Dark mode toggle script -->
+  <script>
+    const htmlEl = document.documentElement;
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    if (localStorage.getItem('theme') === 'dark' ||
+      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      htmlEl.classList.add('dark');
+      toggleBtn.textContent = '☀️';
+    } else {
+      htmlEl.classList.remove('dark');
+      toggleBtn.textContent = '🌙';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        toggleBtn.textContent = '🌙';
+      } else {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        toggleBtn.textContent = '☀️';
+      }
+    });
+    function updateDateTime() {
+      const now = new Date();
+      const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit' };
+      const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+
+      document.getElementById('date-part').textContent = now.toLocaleDateString('en-US', dateOptions);
+      document.getElementById('time-part').textContent = now.toLocaleTimeString('en-US', timeOptions);
+    }
+
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
+
+  <!-- Chatbot toggle button -->
+  <button id="chatbot-toggle" class="fixed bottom-6 right-6 bg-green-700 text-white p-3 rounded-full shadow-lg z-50"
+    title="Open Chatbot">
+    💬
+  </button>
+
+  <!-- Chatbot UI (hidden by default) -->
+  <div id="chatbot"
+    class="fixed bottom-20 right-6 w-80 bg-white shadow-xl rounded-xl border border-gray-300 overflow-hidden hidden z-50">
+    <div class="bg-green-700 text-white p-3 font-semibold text-center">Eco Sri AI Assistant</div>
+    <div id="chat-history" class="p-3 h-60 overflow-y-auto text-sm space-y-2 bg-gray-50"></div>
+    <form id="chat-form" class="flex border-t">
+      <input type="text" id="user-message" placeholder="Ask about jobs..."
+        class="flex-1 p-2 text-sm focus:outline-none" />
+      <button type="submit" class="bg-green-600 px-4 text-white">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const chatbotToggleBtn = document.getElementById("chatbot-toggle");
+    const chatbot = document.getElementById("chatbot");
+
+    chatbotToggleBtn.addEventListener("click", () => {
+      if (chatbot.classList.contains("hidden")) {
+        chatbot.classList.remove("hidden");
+        chatbotToggleBtn.textContent = "❌"; // Change icon to close
+      } else {
+        chatbot.classList.add("hidden");
+        chatbotToggleBtn.textContent = "💬"; // Change icon to chat bubble
+      }
+    });
+
+    document.getElementById("chat-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const inputEl = document.getElementById("user-message");
+      const message = inputEl.value.trim();
+      if (!message) return;
+      const chat = document.getElementById("chat-history");
+
+      // Add user message
+      chat.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+      inputEl.value = "";
+      chat.scrollTop = chat.scrollHeight;
+
+      // Show typing indicator
+      const typingEl = document.createElement('div');
+      typingEl.id = 'typing-indicator';
+      typingEl.innerHTML = `<em>🤖 Typing...</em>`;
+      chat.appendChild(typingEl);
+      chat.scrollTop = chat.scrollHeight;
+
+      fetch("/chatbot/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message })
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Remove typing indicator
+          const typingElem = document.getElementById('typing-indicator');
+          if (typingElem) typingElem.remove();
+
+          // Add bot reply
+          chat.innerHTML += `<div><strong>Bot:</strong> ${data.reply.replace(/\n/g, '<br>')}</div>`;
+          chat.scrollTop = chat.scrollHeight;
+        })
+        .catch(() => {
+          const typingElem = document.getElementById('typing-indicator');
+          if (typingElem) typingElem.remove();
+          chat.innerHTML += `<div><strong>Bot:</strong> Sorry, something went wrong.</div>`;
+          chat.scrollTop = chat.scrollHeight;
+        });
+    });
+  </script>
+
+
+
+</body>
+
+</html>
