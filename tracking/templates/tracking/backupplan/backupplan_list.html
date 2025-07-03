@@ -5,128 +5,126 @@
 {% block content %}
 <div class="max-w-7xl mx-auto p-6 bg-white rounded shadow">
 
-    <h1 class="text-3xl font-bold mb-6 text-center text-green-700">Backup Plan List</h1>
+  <h1 class="text-3xl font-bold mb-6 text-center text-green-700">Backup Plan List</h1>
 
-    <div class="text-right mb-4 space-x-2">
-        <a href="{% url 'export_backupplans_excel' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            ⬇️ Export to Excel
-        </a>
-        <a href="{% url 'add_backupplan' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-            + Add Backup Plan
-        </a>
+  <div class="text-right mb-4 space-x-2">
+    <a href="{% url 'export_backupplans_excel' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      ⬇️ Export to Excel
+    </a>
+    <a href="{% url 'add_backupplan' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+      + Add Backup Plan
+    </a>
+  </div>
+
+  <form method="post" action="{% url 'delete_selected_backupplans' %}">
+    {% csrf_token %}
+    <div class="text-right mb-4">
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        🗑 Delete Selected
+      </button>
     </div>
 
-    <form method="post" action="{% url 'delete_selected_backupplans' %}">
-        {% csrf_token %}
-        <div class="text-right mb-4">
-            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                🗑 Delete Selected
-            </button>
+    {% if backupplans %}
+      {% for manager, plans in backupplans.items %}
+        <h2 class="text-xl font-semibold mt-8 mb-2">🧑‍💼 Area Manager: {{ manager }}</h2>
+
+        <div class="overflow-x-auto mb-6">
+          <table class="table-auto w-full border border-gray-300 text-sm text-left whitespace-nowrap">
+            <thead class="bg-gray-100 text-xs uppercase text-gray-700">
+              <tr>
+                <th class="border px-2 py-1 text-center">
+                  <input type="checkbox" class="select-all" data-group="group-{{ forloop.counter }}">
+                </th>
+                <th class="border px-2 py-1">Center Name</th>
+                <th class="border px-2 py-1">Date</th>
+                <th class="border px-2 py-1">Test Lane 1</th>
+                <th class="border px-2 py-1">Test Lane 2</th>
+                <th class="border px-2 py-1">Test Lane 3</th>
+                <th class="border px-2 py-1">Registration Lane</th>
+                <th class="border px-2 py-1">Certificate Lane</th>
+                <th class="border px-2 py-1">Backup PC</th>
+                <th class="border px-2 py-1">Total PCs</th>
+                <th class="border px-2 py-1">Total Monitors</th>
+                <th class="border px-2 py-1">Mini PC</th>
+                <th class="border px-2 py-1">HP</th>
+                <th class="border px-2 py-1">Eswis</th>
+                <th class="border px-2 py-1">Fingerprint Machines</th>
+                <th class="border px-2 py-1">Backup Fingerprint Machines</th>
+                <th class="border px-2 py-1">UPS</th>
+                <th class="border px-2 py-1">Backup UPS</th>
+                <th class="border px-2 py-1">Wingle</th>
+                <th class="border px-2 py-1">Dongle</th>
+                <th class="border px-2 py-1">Octopus</th>
+                <th class="border px-2 py-1">Remark</th>
+                <th class="border px-2 py-1">Created By</th>
+                <th class="border px-2 py-1">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-800">
+              {% for plan in plans %}
+                <tr class="hover:bg-gray-50">
+                  <td class="border px-2 py-1 text-center">
+                    <input type="checkbox" name="selected_backupplans" value="{{ plan.id }}" class="group-{{ forloop.parentloop.counter }}">
+                  </td>
+                  <td class="border px-2 py-1">{{ plan.center_name }}</td>
+                  <td class="border px-2 py-1">{{ plan.date|date:"M d, Y" }}</td>
+                  <td class="border px-2 py-1">{{ plan.testing_lane_1_pc }}</td>
+                  <td class="border px-2 py-1">{{ plan.testing_lane_2_pc }}</td>
+                  <td class="border px-2 py-1">{{ plan.testing_lane_3_pc|default:"-" }}</td>
+                  <td class="border px-2 py-1">{{ plan.registration_lane_pc }}</td>
+                  <td class="border px-2 py-1">{{ plan.certificate_lane_pc|default:"No" }}</td>
+                  <td class="border px-2 py-1">{{ plan.backup_pc|default:"-" }}</td>
+                  <td class="border px-2 py-1">{{ plan.total_pc }}</td>
+                  <td class="border px-2 py-1">{{ plan.total_monitors }}</td>
+                  <td class="border px-2 py-1">{% if plan.testing_lane_1_pc == "Mini PC" %}1{% else %}0{% endif %}</td>
+                  <td class="border px-2 py-1">{% if plan.testing_lane_2_pc == "HP" %}1{% else %}0{% endif %}</td>
+                  <td class="border px-2 py-1">{% if plan.testing_lane_3_pc == "Eswis" %}1{% else %}0{% endif %}</td>
+                  <td class="border px-2 py-1">{{ plan.fingerprint_machines }}</td>
+                  <td class="border px-2 py-1">{{ plan.backup_fingerprint_machines }}</td>
+                  <td class="border px-2 py-1">{{ plan.ups }}</td>
+                  <td class="border px-2 py-1">{{ plan.backup_ups }}</td>
+                  <td class="border px-2 py-1">{{ plan.wingles }}</td>
+                  <td class="border px-2 py-1">{{ plan.dongles }}</td>
+                  <td class="border px-2 py-1">{{ plan.octopuses }}</td>
+                  <td class="border px-2 py-1 text-gray-700">{{ plan.remark|default:"-" }}</td>
+                  <td class="border px-2 py-1">{{ plan.created_by.username }}</td>
+
+                  <td class="border px-2 py-1 whitespace-nowrap text-center">
+                    {% if plan.created_by == request.user or request.user.is_superuser %}
+                      <a href="{% url 'edit_backupplan' plan.id %}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
+                      <a href="{% url 'delete_backupplan' plan.id %}" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+                    {% else %}
+                      <span class="text-gray-400">No Access</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-gray-500">No backup plans available.</p>
+    {% endif %}
 
-        {% if backupplans %}
-            {% for manager, plans in backupplans.items %}
-                <h2 class="text-xl font-semibold mt-8 mb-2">🧑‍💼 Area Manager: {{ manager }}</h2>
-
-                <div class="overflow-x-auto mb-6">
-                    <table class="table-auto w-full border border-gray-300 text-sm text-left whitespace-nowrap">
-                        <thead class="bg-gray-100 text-xs uppercase text-gray-700">
-                            <tr>
-                                <th class="border px-2 py-1 text-center">
-                                    <!-- Select all checkbox for this manager's plans -->
-                                    <input type="checkbox" class="select-all" data-group="group-{{ forloop.counter }}">
-                                </th>
-                                <th class="border px-2 py-1">Center Name</th>
-                                <th class="border px-2 py-1">Date</th>
-                                <th class="border px-2 py-1">Test Lane 1</th>
-                                <th class="border px-2 py-1">Test Lane 2</th>
-                                <th class="border px-2 py-1">Test Lane 3</th>
-                                <th class="border px-2 py-1">Registration Lane</th>
-                                <th class="border px-2 py-1">Certificate Lane</th>
-                                <th class="border px-2 py-1">Backup PC</th>
-                                <th class="border px-2 py-1">Total PCs</th>
-                                <th class="border px-2 py-1">Total Monitors</th>
-                                <th class="border px-2 py-1">Mini PC</th>
-                                <th class="border px-2 py-1">HP</th>
-                                <th class="border px-2 py-1">Eswis</th>
-                                <th class="border px-2 py-1">Fingerprint Machines</th>
-                                <th class="border px-2 py-1">Backup Fingerprint Machines</th>
-                                <th class="border px-2 py-1">UPS</th>
-                                <th class="border px-2 py-1">Backup UPS</th>
-                                <th class="border px-2 py-1">Wingle</th>
-                                <th class="border px-2 py-1">Dongle</th>
-                                <th class="border px-2 py-1">Octopus</th>
-                                <th class="border px-2 py-1">Created By</th>
-                                <th class="border px-2 py-1">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-800">
-                            {% for plan in plans %}
-                                <tr class="hover:bg-gray-50">
-                                    <td class="border px-2 py-1 text-center">
-                                        <input type="checkbox" name="selected_backupplans" value="{{ plan.id }}" class="group-{{ forloop.parentloop.counter }}">
-                                    </td>
-                                    <td class="border px-2 py-1">{{ plan.center_name }}</td>
-                                    <td class="border px-2 py-1">{{ plan.date|date:"M d, Y" }}</td>
-                                    <td class="border px-2 py-1">{{ plan.testing_lane_1_pc }}</td>
-                                    <td class="border px-2 py-1">{{ plan.testing_lane_2_pc }}</td>
-                                    <td class="border px-2 py-1">{{ plan.testing_lane_3_pc|default:"-" }}</td>
-                                    <td class="border px-2 py-1">{{ plan.registration_lane_pc }}</td>
-                                    <td class="border px-2 py-1">{{ plan.certificate_lane_pc|default:"No" }}</td>
-                                    <td class="border px-2 py-1">{{ plan.backup_pc|default:"-" }}</td>
-
-                                    <td class="border px-2 py-1">{{ plan.total_pc }}</td>
-                                    <td class="border px-2 py-1">{{ plan.total_monitors }}</td>
-
-                                    <td class="border px-2 py-1">{% if plan.testing_lane_1_pc == "Mini PC" %}1{% else %}0{% endif %}</td>
-                                    <td class="border px-2 py-1">{% if plan.testing_lane_2_pc == "HP" %}1{% else %}0{% endif %}</td>
-                                    <td class="border px-2 py-1">{% if plan.testing_lane_3_pc == "Eswis" %}1{% else %}0{% endif %}</td>
-                                    <td class="border px-2 py-1">{{ plan.fingerprint_machines }}</td>
-                                    <td class="border px-2 py-1">{{ plan.backup_fingerprint_machines }}</td>
-                                    <td class="border px-2 py-1">{{ plan.ups }}</td>
-                                    <td class="border px-2 py-1">{{ plan.backup_ups }}</td>
-                                    <td class="border px-2 py-1">{{ plan.wingles }}</td>
-                                    <td class="border px-2 py-1">{{ plan.dongles }}</td>
-                                    <td class="border px-2 py-1">{{ plan.octopuses }}</td>
-                                    <td class="border px-2 py-1">{{ plan.created_by.username }}</td>
-
-                                    <td class="border px-2 py-1 whitespace-nowrap text-center">
-                                        {% if plan.created_by == request.user or request.user.is_superuser %}
-                                            <a href="{% url 'edit_backupplan' plan.id %}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
-                                            <a href="{% url 'delete_backupplan' plan.id %}" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
-                                        {% else %}
-                                            <span class="text-gray-400">No Access</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-gray-500">No backup plans available.</p>
-        {% endif %}
-
-        <div class="flex justify-between items-center pt-6 border-t border-gray-200 mt-4">
-            <a href="{% url 'dashboard' %}" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5">
-                ← Back to Dashboard
-            </a>
-        </div>
-    </form>
-
+    <div class="flex justify-between items-center pt-6 border-t border-gray-200 mt-4">
+      <a href="{% url 'dashboard' %}" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5">
+        ← Back to Dashboard
+      </a>
+    </div>
+  </form>
 </div>
 
 <script>
-    // Select All functionality per manager group
-    document.querySelectorAll('.select-all').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            const groupClass = this.getAttribute('data-group');
-            document.querySelectorAll('input.' + groupClass).forEach(function(cb) {
-                cb.checked = checkbox.checked;
-            });
-        });
+  // Select All functionality per manager group
+  document.querySelectorAll('.select-all').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+      const groupClass = this.getAttribute('data-group');
+      document.querySelectorAll('input.' + groupClass).forEach(function(cb) {
+        cb.checked = checkbox.checked;
+      });
     });
+  });
 </script>
 
 {% endblock %}

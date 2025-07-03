@@ -25,9 +25,9 @@ class Job(models.Model):
     head_office_receive_date = models.DateField(null=True, blank=True)  # Optional
     serial_number = models.CharField(max_length=100)  # Mandatory
     pronto_no_receive = models.CharField(max_length=100, null=True, blank=True)  # Optional
-    pronto_no_sent = models.CharField(max_length=100, null=True, blank=True)  # Optional
-    head_office_sent_date = models.DateField(null=True, blank=True)  # Optional
-    center_receive_date = models.DateField(null=True, blank=True)  # Optional
+    #pronto_no_sent = models.CharField(max_length=100, null=True, blank=True)  # Optional
+    #head_office_sent_date = models.DateField(null=True, blank=True)  # Optional
+    #center_receive_date = models.DateField(null=True, blank=True)  # Optional
     finish_date = models.DateField(null=True, blank=True)  # Optional
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)  # Mandatory
@@ -45,8 +45,8 @@ class Breakdown(models.Model):
     time = models.TimeField()
     duration = models.CharField(max_length=50)
     job_number = models.CharField(max_length=50)
-    issue = models.TextField()
     job_assignee = models.CharField(max_length=100)
+    issue = models.TextField()
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -129,6 +129,9 @@ class BackupPlan(models.Model):
 
     octopuses = models.PositiveIntegerField(default=0)
     backup_octopuses = models.PositiveIntegerField(default=0)
+
+    remark = models.TextField(null=True, blank=True)
+
 
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -3,81 +3,110 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Job Report</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    .sticky-action {
+      position: sticky;
+      right: 0;
+      background-color: white;
+      z-index: 10;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sticky-action-header {
+      position: sticky;
+      right: 0;
+      background-color: #3b82f6;
+      z-index: 20;
+    }
+
+    #bottom-scroll {
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+
+    #scroll-sync {
+      height: 1px;
+    }
+
+    /* Hide scrollbar for the main scroll (but keep scroll functionality) */
+    #main-scroll {
+      scrollbar-width: none; /* Firefox */
+    }
+    #main-scroll::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
+
+  </style>
 </head>
 
 <body class="bg-gray-100 p-6">
-    <div class="max-w-screen-xl mx-auto">
+  <div class="max-w-screen-xl mx-auto">
 
-        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Job Report</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Job Report</h1>
 
-        <!-- Filter Form -->
-        <form method="get" class="mb-6 bg-white p-4 rounded shadow flex flex-wrap gap-4 items-end">
+    <!-- Filter Form -->
+    <form method="get" class="mb-6 bg-white p-4 rounded shadow flex flex-wrap gap-4 items-end">
+      <!-- Filters (same as before) -->
+      <div>
+        <label for="date_from" class="block text-sm font-medium text-gray-700">Date From</label>
+        <input type="date" id="date_from" name="date_from" value="{{ request.GET.date_from }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="date_to" class="block text-sm font-medium text-gray-700">Date To</label>
+        <input type="date" id="date_to" name="date_to" value="{{ request.GET.date_to }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="center" class="block text-sm font-medium text-gray-700">Center</label>
+        <input type="text" id="center" name="center" placeholder="Center" value="{{ request.GET.center }}"
+          class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="job_number" class="block text-sm font-medium text-gray-700">Job Number</label>
+        <input type="text" id="job_number" name="job_number" placeholder="Job Number"
+          value="{{ request.GET.job_number }}" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="serial_number" class="block text-sm font-medium text-gray-700">Serial Number</label>
+        <input type="text" id="serial_number" name="serial_number" placeholder="Serial Number"
+          value="{{ request.GET.serial_number }}" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+        <select id="status" name="status" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
+          <option value="" {% if not request.GET.status %}selected{% endif %}>All</option>
+          <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
+          <option value="Finished" {% if request.GET.status == "Finished" %}selected{% endif %}>Finished</option>
+          <option value="Rejected" {% if request.GET.status == "Rejected" %}selected{% endif %}>Rejected</option>
+          <option value="Purchase" {% if request.GET.status == "Purchase" %}selected{% endif %}>Item in Purchase</option>
+        </select>
+      </div>
+      <div class="flex space-x-2">
+        <button type="submit"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Filter</button>
+        <button type="submit" formaction="{% url 'export_job_excel' %}" formmethod="get"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Export Excel</button>
+      </div>
+    </form>
 
-            <div>
-                <label for="date_from" class="block text-sm font-medium text-gray-700">Date From</label>
-                <input type="date" id="date_from" name="date_from" value="{{ request.GET.date_from }}"
-                    class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
-
-            <div>
-                <label for="date_to" class="block text-sm font-medium text-gray-700">Date To</label>
-                <input type="date" id="date_to" name="date_to" value="{{ request.GET.date_to }}"
-                    class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
-
-            <div>
-                <label for="center" class="block text-sm font-medium text-gray-700">Center</label>
-                <input type="text" id="center" name="center" placeholder="Center" value="{{ request.GET.center }}"
-                    class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
-
-            <div>
-                <label for="job_number" class="block text-sm font-medium text-gray-700">Job Number</label>
-                <input type="text" id="job_number" name="job_number" placeholder="Job Number"
-                    value="{{ request.GET.job_number }}"
-                    class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
-
-            <div>
-                <label for="serial_number" class="block text-sm font-medium text-gray-700">Serial Number</label>
-                <input type="text" id="serial_number" name="serial_number" placeholder="Serial Number"
-                    value="{{ request.GET.serial_number }}"
-                    class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
-            </div>
-
-<div>
-    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-    <select id="status" name="status" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2">
-        <option value="" {% if not request.GET.status %}selected{% endif %}>All</option>
-        <option value="Pending" {% if request.GET.status == 'Pending' %}selected{% endif %}>Pending</option>
-        <option value="Finished" {% if request.GET.status == 'Finished' %}selected{% endif %}>Finished</option>
-        <option value="Rejected" {% if request.GET.status == 'Rejected' %}selected{% endif %}>Rejected</option>
-        <option value="Purchase" {% if request.GET.status == 'Purchase' %}selected{% endif %}>Item in Purchase</option>
-    </select>
-</div>
-
-
-
-                <div class="flex space-x-2">
-                    <button type="submit"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Filter</button>
-                    <button type="submit" formaction="{% url 'export_job_excel' %}" formmethod="get"
-                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Export
-                        Excel</button>
-                </div>
-        </form>
-
-        
     <!-- Multi-Select Delete Form -->
     <form method="post" action="{% url 'delete_selected_jobs' %}"
       onsubmit="return confirm('Are you sure you want to delete selected jobs?');">
       {% csrf_token %}
-      <div class="overflow-x-auto bg-white shadow rounded border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
+    
+      <div class="relative">
+        <!-- Top Scrollbar -->
+        <div id="top-scroll" class="overflow-x-auto">
+          <div id="top-scroll-inner" style="height: 1px;"></div>
+        </div>
+
+      <div id="main-scroll" class="overflow-x-auto bg-white shadow rounded border border-gray-200">
+        <table id="job-table" class="min-w-full divide-y divide-gray-200 text-sm">
           <thead class="bg-gradient-to-r from-green-400 to-blue-500 text-white uppercase tracking-wider">
             <tr>
               <th class="px-4 py-2 text-center">
@@ -92,18 +121,15 @@
               <th class="px-4 py-2 text-left whitespace-nowrap">Request By</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Requester Designation</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Job Assignee</th>
+              <th class="px-4 py-2 text-left whitespace-nowrap">Pronto No Receive</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Center Sent Date</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Head Office Receive Date</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Serial Number</th>
-              <th class="px-4 py-2 text-left whitespace-nowrap">Pronto No Receive</th>
-              <th class="px-4 py-2 text-left whitespace-nowrap">Pronto No Sent</th>
-              <th class="px-4 py-2 text-left whitespace-nowrap">Head Office Sent Date</th>
-              <th class="px-4 py-2 text-left whitespace-nowrap">Center Receive Date</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Finish Date</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Status</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Remark</th>
               <th class="px-4 py-2 text-left whitespace-nowrap">Created By</th>
-              <th class="px-4 py-2 text-center whitespace-nowrap">Actions</th>
+              <th class="px-4 py-2 text-center whitespace-nowrap sticky-action-header">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
@@ -121,18 +147,15 @@
               <td class="px-4 py-2 whitespace-nowrap">{{ job.request_by }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.requester_designation }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.job_assignee }}</td>
+              <td class="px-4 py-2 whitespace-nowrap">{{ job.pronto_no_receive }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.center_sent_date }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.head_office_receive_date }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.serial_number }}</td>
-              <td class="px-4 py-2 whitespace-nowrap">{{ job.pronto_no_receive }}</td>
-              <td class="px-4 py-2 whitespace-nowrap">{{ job.pronto_no_sent }}</td>
-              <td class="px-4 py-2 whitespace-nowrap">{{ job.head_office_sent_date }}</td>
-              <td class="px-4 py-2 whitespace-nowrap">{{ job.center_receive_date }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.finish_date|default:"-" }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.status }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.remark|default:"-" }}</td>
               <td class="px-4 py-2 whitespace-nowrap">{{ job.created_by.username }}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-center">
+              <td class="px-4 py-2 whitespace-nowrap text-center sticky-action">
                 {% if job.created_by == current_user or current_user.is_superuser %}
                 <a href="{% url 'edit_job' job.id %}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
                 <a href="{% url 'delete_job' job.id %}" class="text-red-600 hover:text-red-900"
@@ -151,6 +174,11 @@
         </table>
       </div>
 
+      <!-- Bottom Scroll Sync -->
+      <div id="bottom-scroll" class="overflow-x-auto mt-2">
+        <div id="bottom-scroll-inner" style="height: 1px;"></div>
+      </div>
+
       <div class="mt-4 flex justify-end">
         <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
           Delete Selected
@@ -158,18 +186,51 @@
       </div>
     </form>
 
-    <a href="{% url 'dashboard' %}" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5">
-          ← Back to Dashboard
-        </a>
+    <a href="{% url 'dashboard' %}"
+      class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-xl transition transform hover:-translate-y-0.5">
+      ← Back to Dashboard
+    </a>
   </div>
 
   <script>
-    // Select/unselect all checkboxes
-    document.getElementById('select_all').addEventListener('change', function(e) {
-      const checked = e.target.checked;
-      document.querySelectorAll('.job_checkbox').forEach(cb => cb.checked = checked);
-    });
-  </script>
+  document.getElementById('select_all').addEventListener('change', function (e) {
+    const checked = e.target.checked;
+    document.querySelectorAll('.job_checkbox').forEach(cb => cb.checked = checked);
+  });
+
+  const topScroll = document.getElementById('top-scroll');
+  const topInner = document.getElementById('top-scroll-inner');
+  const mainScroll = document.getElementById('main-scroll');
+  const bottomScroll = document.getElementById('bottom-scroll');
+  const bottomInner = document.getElementById('bottom-scroll-inner');
+  const realTable = document.getElementById('job-table');
+
+  function syncScrollWidth() {
+    const tableWidth = realTable.scrollWidth;
+    topInner.style.width = tableWidth + 'px';
+    bottomInner.style.width = tableWidth + 'px';
+  }
+
+  // Sync scroll positions
+  topScroll.addEventListener('scroll', () => {
+    mainScroll.scrollLeft = topScroll.scrollLeft;
+    bottomScroll.scrollLeft = topScroll.scrollLeft;
+  });
+
+  mainScroll.addEventListener('scroll', () => {
+    topScroll.scrollLeft = mainScroll.scrollLeft;
+    bottomScroll.scrollLeft = mainScroll.scrollLeft;
+  });
+
+  bottomScroll.addEventListener('scroll', () => {
+    topScroll.scrollLeft = bottomScroll.scrollLeft;
+    mainScroll.scrollLeft = bottomScroll.scrollLeft;
+  });
+
+  window.addEventListener('load', syncScrollWidth);
+  window.addEventListener('resize', syncScrollWidth);
+</script>
+
 </body>
 
 </html>

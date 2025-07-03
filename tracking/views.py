@@ -550,10 +550,9 @@ def export_job_excel(request):
     # Define headers matching your table columns
     headers = [
         "Job Date", "Center", "Area Manager", "Area Manager Email", "Job Number",
-        "Item Type", "Request By", "Requester Designation", "Job Assignee",
+        "Item Type", "Request By", "Requester Designation", "Job Assignee","Pronto No Receive",
         "Center Sent Date", "Head Office Receive Date", "Serial Number",
-        "Pronto No Receive", "Pronto No Sent", "Head Office Sent Date",
-        "Center Receive Date", "Finish Date", "Status", "Remark", "Created By"
+        "Finish Date", "Status", "Remark", "Created By"
     ]
 
     # Write header row with style
@@ -589,13 +588,10 @@ def export_job_excel(request):
             job.request_by,
             job.requester_designation,
             job.job_assignee,
+            job.pronto_no_receive,
             job.center_sent_date,
             job.head_office_receive_date,
             job.serial_number,
-            job.pronto_no_receive,
-            job.pronto_no_sent,
-            job.head_office_sent_date,
-            job.center_receive_date,
             job.finish_date if job.finish_date else "-",
             job.status,
             job.remark if job.remark else "-",
@@ -1245,12 +1241,6 @@ def edit_backupplan(request, plan_id):
         form = BackupPlanForm(instance=plan)
 
     return render(request, 'tracking/edit_backupplan.html', {'form': form, 'plan': plan})
-import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
-from collections import defaultdict
-from django.http import HttpResponse
-from .models import BackupPlan
 
 def export_backupplans_excel(request):
     all_plans = BackupPlan.objects.all().order_by('area_manager', '-date')
@@ -1271,12 +1261,12 @@ def export_backupplans_excel(request):
         "Center Name", "Date", "Test Lane 1", "Test Lane 2", "Test Lane 3",
         "Registration Lane", "Certificate Lane", "Backup PC", "Total PCs", "Total Monitors",
         "Mini PC", "HP", "Eswis", "Fingerprint Machines", "Backup Fingerprint Machines",
-        "UPS", "Backup UPS", "Wingle", "Dongle", "Octopus", "Created By", "Actions"
+        "UPS", "Backup UPS", "Wingle", "Dongle", "Octopus", "Remark", "Created By", "Actions"
     ]
 
     row_num = 1
     for manager, plans in grouped.items():
-        # Area Manager Title
+        # Area Manager Title Row
         ws.merge_cells(start_row=row_num, start_column=1, end_row=row_num, end_column=len(headers))
         cell = ws.cell(row=row_num, column=1)
         cell.value = f"🧑‍💼 Area Manager: {manager}"
@@ -1284,7 +1274,7 @@ def export_backupplans_excel(request):
         cell.alignment = center_align
         row_num += 1
 
-        # Header row
+        # Header Row
         for col_num, header in enumerate(headers, 1):
             cell = ws.cell(row=row_num, column=col_num)
             cell.value = header
@@ -1293,6 +1283,7 @@ def export_backupplans_excel(request):
             cell.alignment = center_align
         row_num += 1
 
+        # Data Rows
         for plan in plans:
             row = [
                 plan.center_name,
@@ -1315,9 +1306,11 @@ def export_backupplans_excel(request):
                 plan.wingles,
                 plan.dongles,
                 plan.octopuses,
+                plan.remark or "-",
                 plan.created_by.username if plan.created_by else "",
                 "Edit/Delete" if request.user == plan.created_by or request.user.is_superuser else "No Access"
             ]
+
             for col_num, val in enumerate(row, 1):
                 cell = ws.cell(row=row_num, column=col_num)
                 cell.value = val

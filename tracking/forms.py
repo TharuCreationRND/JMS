@@ -12,7 +12,7 @@ INPUT_STYLE = "w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 f
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        exclude = ['created_by']
+        exclude = ['created_by', 'pronto_sent', 'head_office_sent_date', 'center_receive_date']
         widgets = {
             'job_date': forms.DateInput(attrs={'type': 'date', 'class': INPUT_STYLE}),
             'center': forms.TextInput(attrs={'class': INPUT_STYLE}),
@@ -66,8 +66,8 @@ class BreakdownForm(forms.ModelForm):
             'time': forms.TimeInput(attrs={'type': 'time', 'class': INPUT_STYLE}),
             'duration': forms.TextInput(attrs={'class': INPUT_STYLE}),
             'job_number': forms.TextInput(attrs={'class': INPUT_STYLE}),
+	    'job_assignee': forms.TextInput(attrs={'class': INPUT_STYLE}),
             'issue': forms.Textarea(attrs={'class': INPUT_STYLE, 'rows': 3}),
-            'job_assignee': forms.TextInput(attrs={'class': INPUT_STYLE}),
             'comment': forms.Textarea(attrs={'class': INPUT_STYLE, 'rows': 3}),
         }
 
@@ -103,6 +103,7 @@ class BorrowForm(forms.ModelForm):
         }
 
 
+
 from django import forms
 from .models import BackupPlan
 
@@ -110,7 +111,28 @@ class BackupPlanForm(forms.ModelForm):
     class Meta:
         model = BackupPlan
         exclude = ['created_by'] 
-        fields = '__all__'  # or list the specific fields you want in the form
+        fields = [
+            'date', 'center_name', 'details_given_by', 'area_manager',
+            'testing_lane_1_pc', 'testing_lane_1_monitor',
+            'testing_lane_2_pc', 'testing_lane_2_monitor',
+            'testing_lane_3_pc', 'testing_lane_3_monitor',
+            'registration_lane_pc', 'registration_lane_monitor',
+            'certificate_lane_pc', 'certificate_lane_monitor',
+            'backup_pc', 'backup_monitor',
+            'fingerprint_machines', 'backup_fingerprint_machines',
+            'ups', 'backup_ups',
+            'wingles', 'backup_wingles',
+            'dongles', 'backup_dongles',
+            'octopuses', 'backup_octopuses',
+            'remark'  # Make sure remark is included here
+        ]
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date', 'class': 'border rounded px-3 py-2 w-full'}),
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'border rounded px-3 py-2 w-full'
+            }),
+            'remark': forms.Textarea(attrs={
+                'rows': 4,
+                'class': 'resize-none border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400'
+            }),
         }

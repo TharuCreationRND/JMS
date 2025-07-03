@@ -8,9 +8,15 @@
   <form method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
     {% csrf_token %}
     {% for field in form %}
-      <div class="flex flex-col">
+      <div class="flex flex-col {% if field.name == 'remark' %}md:col-span-2{% endif %}">
         <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700">{{ field.label }}</label>
-        {{ field|add_class:"border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400" }}
+
+        {% if field.name == "remark" %}
+          {{ field }}  {# remark already has correct styling in widget definition #}
+        {% else %}
+          {{ field|add_class:"border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400" }}
+        {% endif %}
+
         {% if field.help_text %}
           <small class="text-gray-500 mt-1">{{ field.help_text }}</small>
         {% endif %}
